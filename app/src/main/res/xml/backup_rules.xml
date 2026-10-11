@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Regras de backup: a base de dados cifrada e o ficheiro seguro
+     (token biométrico) NUNCA participam no backup. A base continua
+     cifrada mesmo que algum ficheiro seja copiado por outra via. -->
+<full-backup-content>
+    <exclude domain="database" path="vaultkey.db" />
+    <exclude domain="database" path="vaultkey.db-journal" />
+    <exclude domain="database" path="vaultkey.db-wal" />
+    <exclude domain="sharedpref" path="vaultkey_secure.xml" />
+</full-backup-content>

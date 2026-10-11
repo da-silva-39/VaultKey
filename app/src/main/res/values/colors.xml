@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Identidade VaultKey: fundo azul-escuro, destaque verde-azulado -->
+    <color name="vault_bg">#0A1120</color>
+    <color name="vault_surface">#131C2E</color>
+    <color name="vault_surface_variant">#1B2740</color>
+    <color name="vault_teal">#2DD4BF</color>
+    <color name="vault_teal_dark">#0E7490</color>
+    <color name="vault_blue">#3B82F6</color>
+    <color name="vault_text">#E6EDF7</color>
+    <color name="vault_text_muted">#93A1B8</color>
+    <color name="vault_error">#F87171</color>
+    <color name="vault_success">#34D399</color>
+    <color name="vault_warning">#FBBF24</color>
+</resources>

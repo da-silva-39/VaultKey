@@ -1,0 +1,27 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Cadeado estilizado VaultKey: escudo + fechadura em verde-azulado -->
+    <path
+        android:fillColor="#0A1120"
+        android:pathData="M0,0h108v108h-108z" />
+    <path
+        android:fillColor="#131C2E"
+        android:pathData="M54,8m-38,0a38,38 0,1 1,76 0a38,38 0,1 1,-76 0" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M42,52V44a12,12 0,0 1,24 0v8"
+        android:strokeWidth="6"
+        android:strokeColor="#2DD4BF" />
+    <path
+        android:fillColor="#2DD4BF"
+        android:pathData="M36,52h36v24a4,4 0,0 1,-4 4H40a4,4 0,0 1,-4 -4z" />
+    <path
+        android:fillColor="#0A1120"
+        android:pathData="M54,60m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    <path
+        android:fillColor="#0A1120"
+        android:pathData="M52,63h4l1,7h-6z" />
+</vector>

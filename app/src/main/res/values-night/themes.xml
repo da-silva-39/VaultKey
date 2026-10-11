@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.VaultKey" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/vault_teal</item>
+        <item name="colorOnPrimary">#06231F</item>
+        <item name="colorPrimaryContainer">@color/vault_teal_dark</item>
+        <item name="colorOnPrimaryContainer">@color/vault_text</item>
+        <item name="colorSecondary">@color/vault_blue</item>
+        <item name="colorOnSecondary">@color/vault_text</item>
+        <item name="android:colorBackground">@color/vault_bg</item>
+        <item name="colorSurface">@color/vault_surface</item>
+        <item name="colorOnSurface">@color/vault_text</item>
+        <item name="colorSurfaceVariant">@color/vault_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/vault_text_muted</item>
+        <item name="colorError">@color/vault_error</item>
+    </style>
+
+    <style name="Theme.VaultKey" parent="Base.Theme.VaultKey" />
+</resources>

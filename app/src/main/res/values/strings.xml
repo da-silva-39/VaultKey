@@ -1,0 +1,163 @@
+<resources>
+    <string name="app_name">VaultKey</string>
+    <string name="app_tagline">Cofre seguro • offline</string>
+
+    <!-- Navegação -->
+    <string name="nav_home">Início</string>
+    <string name="nav_vault">Cofre</string>
+    <string name="nav_auth">2FA</string>
+    <string name="nav_settings">Ajustes</string>
+
+    <!-- Splash / arranque -->
+    <string name="splash_loading">A abrir o cofre…</string>
+
+    <!-- Configuração inicial / PIN -->
+    <string name="setup_title">Criar cofre</string>
+    <string name="setup_desc">Define um PIN para proteger o teu cofre. Sem o PIN, os dados ficam irrecuperáveis — não existe recuperação online.</string>
+    <string name="setup_pin">PIN (4 a 12 dígitos)</string>
+    <string name="setup_pin_confirm">Confirmar PIN</string>
+    <string name="setup_create">Criar cofre</string>
+    <string name="setup_pin_mismatch">Os PINs não coincidem.</string>
+    <string name="setup_pin_invalid">O PIN deve ter 4 a 12 dígitos numéricos.</string>
+    <string name="setup_success">Cofre criado com sucesso.</string>
+
+    <!-- Desbloqueio -->
+    <string name="unlock_title">Desbloquear cofre</string>
+    <string name="unlock_desc">Introduz o teu PIN para continuar.</string>
+    <string name="unlock_pin">PIN</string>
+    <string name="unlock_button">Desbloquear</string>
+    <string name="unlock_biometric">Usar biometria</string>
+    <string name="unlock_wrong">PIN incorrecto. Tentativa %1$d de %2$d.</string>
+    <string name="unlock_locked_out">Muitas tentativas. Tenta novamente em %1$d segundos.</string>
+    <string name="unlock_biometric_failed">Autenticação biométrica falhou.</string>
+    <string name="unlock_no_biometric">Biometria indisponível neste dispositivo.</string>
+
+    <!-- Dashboard -->
+    <string name="dash_title">VaultKey</string>
+    <string name="dash_credentials">Credenciais</string>
+    <string name="dash_accounts">Contas 2FA</string>
+    <string name="dash_new_credential">Nova credencial</string>
+    <string name="dash_generate">Gerar senha</string>
+    <string name="dash_new_2fa">Nova conta 2FA</string>
+    <string name="dash_favorites">Favoritos</string>
+    <string name="dash_search_hint">Pesquisar no cofre…</string>
+    <string name="dash_lock">Bloquear</string>
+    <string name="dash_empty">Ainda não tens dados guardados.</string>
+
+    <!-- Credenciais -->
+    <string name="cred_title">Cofre</string>
+    <string name="cred_search_hint">Pesquisar por serviço, utilizador…</string>
+    <string name="cred_filter_all">Todas</string>
+    <string name="cred_filter_favorites">Favoritas</string>
+    <string name="cred_new">Nova credencial</string>
+    <string name="cred_service">Serviço *</string>
+    <string name="cred_url">URL</string>
+    <string name="cred_username">Utilizador</string>
+    <string name="cred_password">Senha *</string>
+    <string name="cred_notes">Notas privadas</string>
+    <string name="cred_category">Categoria</string>
+    <string name="cred_favorite">Favorita</string>
+    <string name="cred_save">Guardar</string>
+    <string name="cred_delete">Eliminar</string>
+    <string name="cred_edit">Editar</string>
+    <string name="cred_copy_user">Copiar utilizador</string>
+    <string name="cred_copy_pass">Copiar senha</string>
+    <string name="cred_show">Mostrar</string>
+    <string name="cred_hide">Ocultar</string>
+    <string name="cred_open_url">Abrir URL</string>
+    <string name="cred_saved">Credencial guardada.</string>
+    <string name="cred_deleted">Credencial eliminada.</string>
+    <string name="cred_delete_confirm">Eliminar esta credencial? Esta acção não pode ser anulada.</string>
+    <string name="cred_invalid">Verifica os campos: serviço e senha são obrigatórios, e o URL deve ser válido.</string>
+    <string name="cred_empty">Sem credenciais. Toca em + para criar.</string>
+    <string name="cred_use_generated">Usar senha gerada</string>
+    <string name="copied">Copiado. Será limpo em %1$d s.</string>
+    <string name="copied_no_clear">Copiado.</string>
+
+    <!-- Categorias -->
+    <string name="cat_social">Redes sociais</string>
+    <string name="cat_email">Email</string>
+    <string name="cat_work">Trabalho</string>
+    <string name="cat_bank">Banco</string>
+    <string name="cat_university">Universidade</string>
+    <string name="cat_other">Outros</string>
+
+    <!-- Gerador -->
+    <string name="gen_title">Gerador de senhas</string>
+    <string name="gen_length">Comprimento: %1$d</string>
+    <string name="gen_upper">Maiúsculas (A–Z)</string>
+    <string name="gen_lower">Minúsculas (a–z)</string>
+    <string name="gen_digits">Números (0–9)</string>
+    <string name="gen_symbols">Símbolos (!@#…)</string>
+    <string name="gen_no_ambiguous">Excluir ambíguos (0 O 1 l I)</string>
+    <string name="gen_regenerate">Gerar nova</string>
+    <string name="gen_copy">Copiar</string>
+    <string name="gen_strength">Força: %1$s</string>
+    <string name="strength_weak">Fraca</string>
+    <string name="strength_fair">Razoável</string>
+    <string name="strength_good">Boa</string>
+    <string name="strength_strong">Forte</string>
+    <string name="strength_very_strong">Muito forte</string>
+    <string name="gen_need_category">Selecciona pelo menos uma categoria de caracteres.</string>
+
+    <!-- Authenticator -->
+    <string name="auth_title">Authenticator</string>
+    <string name="auth_new">Nova conta 2FA</string>
+    <string name="auth_scan">Ler QR Code</string>
+    <string name="auth_manual">Cadastro manual</string>
+    <string name="auth_issuer">Serviço</string>
+    <string name="auth_account">Conta</string>
+    <string name="auth_secret">Segredo (Base32)</string>
+    <string name="auth_type">Tipo</string>
+    <string name="auth_hash">Algoritmo</string>
+    <string name="auth_digits">Dígitos</string>
+    <string name="auth_period">Período (s)</string>
+    <string name="auth_counter">Contador inicial</string>
+    <string name="auth_save">Guardar conta</string>
+    <string name="auth_saved">Conta 2FA guardada.</string>
+    <string name="auth_deleted">Conta 2FA eliminada.</string>
+    <string name="auth_delete_confirm">Eliminar esta conta 2FA? Os códigos deixarão de ser gerados.</string>
+    <string name="auth_invalid">Parâmetros inválidos. Verifica o segredo Base32 e os campos.</string>
+    <string name="auth_empty">Sem contas 2FA. Adiciona via QR Code ou manualmente.</string>
+    <string name="auth_copy_code">Copiar código</string>
+    <string name="auth_next">Avançar contador (HOTP)</string>
+    <string name="auth_confirm_save">Guardar esta conta?</string>
+    <string name="auth_qr_invalid">QR Code inválido ou sem URI otpauth:// válida.</string>
+    <string name="auth_camera_denied">Permissão da câmara recusada. Usa o cadastro manual.</string>
+    <string name="auth_camera_hint">Aponta a câmara para o QR Code otpauth://</string>
+
+    <!-- Ajustes -->
+    <string name="set_title">Ajustes</string>
+    <string name="set_security">Segurança</string>
+    <string name="set_biometric">Desbloqueio biométrico</string>
+    <string name="set_biometric_summary">Usar impressão digital/rosto para desbloquear</string>
+    <string name="set_autolock">Bloqueio automático</string>
+    <string name="set_lock_on_exit">Bloquear ao sair da app</string>
+    <string name="set_clipboard">Limpeza do clipboard</string>
+    <string name="set_about">Sobre a segurança</string>
+    <string name="set_about_text">O VaultKey funciona 100% offline. Senhas e segredos são cifrados com AES-GCM antes de chegar à base de dados; as chaves vivem no Android Keystore. Sem o PIN (e sem as chaves do dispositivo), os dados são irrecuperáveis.</string>
+    <string name="set_lock_now">Bloquear agora</string>
+    <string name="set_delete_vault">Eliminar cofre permanentemente</string>
+    <string name="set_delete_confirm">Eliminar TODO o cofre? Credenciais, contas 2FA e chaves serão apagados. Não há como recuperar.</string>
+    <string name="set_delete_type">Escreve ELIMINAR para confirmar</string>
+    <string name="set_deleted">Cofre eliminado.</string>
+    <string name="set_saved">Definições guardadas.</string>
+
+    <!-- Tempos -->
+    <string name="time_15s">15 segundos</string>
+    <string name="time_30s">30 segundos</string>
+    <string name="time_1m">1 minuto</string>
+    <string name="time_2m">2 minutos</string>
+    <string name="time_5m">5 minutos</string>
+    <string name="time_never">Nunca limpar</string>
+
+    <!-- Comuns -->
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_confirm">Confirmar</string>
+    <string name="action_ok">OK</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_retry">Tentar de novo</string>
+    <string name="error_generic">Ocorreu um erro. Tenta novamente.</string>
+    <string name="error_locked">Cofre bloqueado. Desbloqueia para continuar.</string>
+    <string name="error_crypto">Falha de integridade: os dados podem ter sido alterados.</string>
+</resources>
