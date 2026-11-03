@@ -32,8 +32,8 @@ import mz.ac.ucm.feng.ti.vaultkey.authenticator.uri.OtpAuthUri;
 
 /**
  * Leitura de QR Code otpauth:// com a API Camera do framework + ZXing
- * (100% offline, sem dependências novas). A permissão da câmara é pedida
- * apenas aqui; se recusada, indica o cadastro manual. O conteúdo é
+ * (100% offline, sem dependencias novas). A permissao da câmara é pedida
+ * apenas aqui; se recusada, indica o cadastro manual. O conteudo é
  * validado antes de qualquer uso.
  */
 public class QrScanFragment extends Fragment implements SurfaceHolder.Callback,
@@ -92,8 +92,6 @@ public class QrScanFragment extends Fragment implements SurfaceHolder.Callback,
         return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED;
     }
-
-    // ---- SurfaceHolder.Callback ----
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {

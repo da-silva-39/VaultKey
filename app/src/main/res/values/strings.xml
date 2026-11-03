@@ -5,7 +5,7 @@
     <!-- Navegação -->
     <string name="nav_home">Início</string>
     <string name="nav_vault">Cofre</string>
-    <string name="nav_auth">2FA</string>
+    <string name="nav_auth">Códigos</string>
     <string name="nav_settings">Ajustes</string>
 
     <!-- Splash / arranque -->
@@ -42,7 +42,40 @@
     <string name="dash_favorites">Favoritos</string>
     <string name="dash_search_hint">Pesquisar no cofre…</string>
     <string name="dash_lock">Bloquear</string>
-    <string name="dash_empty">Ainda não tens dados guardados.</string>
+    <string name="dash_empty">O cofre está vazio. Cria a primeira credencial.</string>
+
+    <!-- Saúde do cofre -->
+    <string name="health_title">Saúde do cofre</string>
+    <string name="health_subtitle">Senhas fracas, repetidas e antigas. A análise fica só neste dispositivo.</string>
+    <string name="health_score_label">Classificação</string>
+    <string name="health_score_placeholder">—</string>
+    <string name="health_score_max">/ 100</string>
+    <string name="health_summary_perfect">Tudo em ordem. Continua assim.</string>
+    <string name="health_weak">Senhas fracas</string>
+    <string name="health_weak_hint">Usa o gerador para criar senhas longas e únicas.</string>
+    <string name="health_reused">Senhas repetidas</string>
+    <string name="health_reused_hint">Cada serviço deve ter uma senha diferente.</string>
+    <string name="health_old">Credenciais antigas</string>
+    <string name="health_old_hint">Sem alterações há mais de 180 dias.</string>
+    <string name="health_weak_count">Senhas fracas (%1$d)</string>
+    <string name="health_reused_count">Senhas repetidas (%1$d)</string>
+    <string name="health_old_count">Credenciais antigas (%1$d)</string>
+    <string name="health_none">Nada a assinalar.</string>
+    <string name="health_all_good">Sem problemas detectados.</string>
+    <string name="health_tip">Nada é enviado para a internet.</string>
+    <string name="dash_health">Saúde do cofre</string>
+    <string name="dash_health_open">Ver detalhes</string>
+    <string name="dash_health_loading">A analisar…</string>
+
+    <plurals name="health_issues">
+        <item quantity="one">%d credencial precisa de atenção.</item>
+        <item quantity="other">%d credenciais precisam de atenção.</item>
+    </plurals>
+
+    <plurals name="health_total">
+        <item quantity="one">%d credencial no cofre</item>
+        <item quantity="other">%d credenciais no cofre</item>
+    </plurals>
 
     <!-- Credenciais -->
     <string name="cred_title">Cofre</string>
@@ -101,7 +134,8 @@
     <string name="gen_need_category">Selecciona pelo menos uma categoria de caracteres.</string>
 
     <!-- Authenticator -->
-    <string name="auth_title">Authenticator</string>
+    <string name="auth_title">Códigos 2FA</string>
+    <string name="auth_search_hint">Pesquisar por serviço ou conta…</string>
     <string name="auth_new">Nova conta 2FA</string>
     <string name="auth_scan">Ler QR Code</string>
     <string name="auth_manual">Cadastro manual</string>
@@ -118,7 +152,8 @@
     <string name="auth_deleted">Conta 2FA eliminada.</string>
     <string name="auth_delete_confirm">Eliminar esta conta 2FA? Os códigos deixarão de ser gerados.</string>
     <string name="auth_invalid">Parâmetros inválidos. Verifica o segredo Base32 e os campos.</string>
-    <string name="auth_empty">Sem contas 2FA. Adiciona via QR Code ou manualmente.</string>
+    <string name="auth_empty">Ainda sem códigos 2FA. Adiciona uma conta por QR Code ou manualmente.</string>
+    <string name="auth_no_results">Nenhuma conta corresponde à pesquisa.</string>
     <string name="auth_copy_code">Copiar código</string>
     <string name="auth_next">Avançar contador (HOTP)</string>
     <string name="auth_confirm_save">Guardar esta conta?</string>
@@ -152,6 +187,7 @@
     <string name="time_never">Nunca limpar</string>
 
     <!-- Comuns -->
+    <string name="action_back">Voltar</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_confirm">Confirmar</string>
     <string name="action_ok">OK</string>

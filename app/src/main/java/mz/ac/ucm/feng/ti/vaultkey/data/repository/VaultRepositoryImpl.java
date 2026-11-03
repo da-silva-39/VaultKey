@@ -47,6 +47,13 @@ public class VaultRepositoryImpl implements VaultRepository {
     private final SharedPreferences settings;
     private final SharedPreferences secure;
 
+    // Cópia em memória da configuração: as definições são lidas na thread
+    // principal (onPause, detalhes), onde o Room não permite consultas.
+    private volatile boolean biometricEnabledCache;
+    private volatile int autoLockSecondsCache = 60;
+    private volatile int clipboardClearSecondsCache = 30;
+    private volatile boolean lockOnExitCache = true;
+
     public VaultRepositoryImpl(Context appContext, VaultDatabase db, SessionManager session,
                                KeystoreKeyManager keystore, PinVerifier pinVerifier) {
         this.appContext = appContext.getApplicationContext();
@@ -69,10 +76,39 @@ public class VaultRepositoryImpl implements VaultRepository {
     @Override
     public boolean isInitialized() {
         try {
-            return db.vaultConfigDao().get() != null;
+            VaultConfigEntity entity = db.vaultConfigDao().get();
+            if (entity != null) {
+                applyConfig(entity);
+            }
+            return entity != null;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /** Recarrega a configuração (chamar fora da thread principal). */
+    public void reloadConfig() {
+        try {
+            VaultConfigEntity entity = db.vaultConfigDao().get();
+            if (entity != null) {
+                applyConfig(entity);
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void applyConfig(VaultConfigEntity entity) {
+        biometricEnabledCache = entity.biometricEnabled;
+        autoLockSecondsCache = Math.max(0, entity.autoLockSeconds);
+        clipboardClearSecondsCache = Math.max(0, entity.clipboardClearSeconds);
+        lockOnExitCache = entity.lockOnExit;
+    }
+
+    private void resetConfigCache() {
+        biometricEnabledCache = false;
+        autoLockSecondsCache = 60;
+        clipboardClearSecondsCache = 30;
+        lockOnExitCache = true;
     }
 
     @Override
@@ -96,6 +132,7 @@ public class VaultRepositoryImpl implements VaultRepository {
             entity.lockOnExit = true;
             entity.createdAt = System.currentTimeMillis();
             db.vaultConfigDao().insert(entity);
+            applyConfig(entity);
             session.setAutoLockSeconds(entity.autoLockSeconds);
             session.unlock(key);
             return Result.ok(null);
@@ -114,6 +151,7 @@ public class VaultRepositoryImpl implements VaultRepository {
             if (entity == null) {
                 return Result.fail("Cofre inexistente.");
             }
+            applyConfig(entity);
             if (!pinVerifier.verify(pin, entity.pinVerifier)) {
                 long lockout = session.registerFailedAttempt();
                 if (lockout > 0) {
@@ -139,6 +177,7 @@ public class VaultRepositoryImpl implements VaultRepository {
             if (entity == null || !entity.biometricEnabled) {
                 return Result.fail("Biometria não configurada.");
             }
+            applyConfig(entity);
             SecretKey key = keystore.getOrCreateDataKey();
             session.setAutoLockSeconds(entity.autoLockSeconds);
             session.unlock(key);
@@ -184,6 +223,7 @@ public class VaultRepositoryImpl implements VaultRepository {
             }
             secure.edit().clear().apply();
             settings.edit().clear().apply();
+            resetConfigCache();
             // 6. Dados temporários sensíveis: sessão já limpa.
             return Result.ok(null);
         } catch (Exception e) {
@@ -205,11 +245,7 @@ public class VaultRepositoryImpl implements VaultRepository {
 
     @Override
     public boolean isBiometricEnabled() {
-        try {
-            return requireConfig().biometricEnabled;
-        } catch (Exception e) {
-            return false;
-        }
+        return biometricEnabledCache;
     }
 
     @Override
@@ -217,6 +253,7 @@ public class VaultRepositoryImpl implements VaultRepository {
         VaultConfigEntity e = requireConfig();
         e.biometricEnabled = enabled;
         db.vaultConfigDao().update(e);
+        biometricEnabledCache = enabled;
         if (!enabled) {
             secure.edit().clear().apply();
         }
@@ -224,11 +261,7 @@ public class VaultRepositoryImpl implements VaultRepository {
 
     @Override
     public int getAutoLockSeconds() {
-        try {
-            return requireConfig().autoLockSeconds;
-        } catch (Exception e) {
-            return 60;
-        }
+        return autoLockSecondsCache;
     }
 
     @Override
@@ -236,16 +269,13 @@ public class VaultRepositoryImpl implements VaultRepository {
         VaultConfigEntity e = requireConfig();
         e.autoLockSeconds = Math.max(0, seconds);
         db.vaultConfigDao().update(e);
+        autoLockSecondsCache = e.autoLockSeconds;
         session.setAutoLockSeconds(e.autoLockSeconds);
     }
 
     @Override
     public int getClipboardClearSeconds() {
-        try {
-            return requireConfig().clipboardClearSeconds;
-        } catch (Exception e) {
-            return 30;
-        }
+        return clipboardClearSecondsCache;
     }
 
     @Override
@@ -253,15 +283,12 @@ public class VaultRepositoryImpl implements VaultRepository {
         VaultConfigEntity e = requireConfig();
         e.clipboardClearSeconds = Math.max(0, seconds);
         db.vaultConfigDao().update(e);
+        clipboardClearSecondsCache = e.clipboardClearSeconds;
     }
 
     @Override
     public boolean isLockOnExit() {
-        try {
-            return requireConfig().lockOnExit;
-        } catch (Exception e) {
-            return true;
-        }
+        return lockOnExitCache;
     }
 
     @Override
@@ -269,6 +296,7 @@ public class VaultRepositoryImpl implements VaultRepository {
         VaultConfigEntity e = requireConfig();
         e.lockOnExit = lock;
         db.vaultConfigDao().update(e);
+        lockOnExitCache = lock;
     }
 
     @Override

@@ -5,6 +5,10 @@ import android.view.View;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import mz.ac.ucm.feng.ti.vaultkey.R;
@@ -28,8 +32,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
         bottomNav = findViewById(R.id.bottom_nav);
+        applySystemBarInsets(findViewById(R.id.root));
 
         com.google.android.material.bottomnavigation.BottomNavigationView nav =
                 findViewById(R.id.bottom_nav);
@@ -83,18 +89,21 @@ public class MainActivity extends AppCompatActivity {
         enforceSessionGate();
     }
 
-    /** Se o cofre bloqueou por baixo da UI, volta ao desbloqueio. */
+    /**
+     * Se o cofre bloqueou por baixo da UI, volta ao desbloqueio. Só ecrãs
+     * protegidos chegam aqui (splash/setup/desbloqueio ficam de fora), pelo
+     * que não é necessário consultar a base de dados na thread principal.
+     */
     public void enforceSessionGate() {
         try {
-            VaultRepository vault = ServiceLocator.get().vaultRepository();
             Fragment current = getSupportFragmentManager().findFragmentById(R.id.container);
-            boolean needsUnlock = current != null
-                    && !(current instanceof SplashFragment)
-                    && !(current instanceof mz.ac.ucm.feng.ti.vaultkey.presentation.vault.SetupPinFragment)
-                    && !(current instanceof mz.ac.ucm.feng.ti.vaultkey.presentation.vault.UnlockFragment);
-            if (!vault.isInitialized() && needsUnlock) {
-                showSetup();
-            } else if (vault.isInitialized() && !vault.isUnlocked() && needsUnlock) {
+            if (current == null
+                    || current instanceof SplashFragment
+                    || current instanceof mz.ac.ucm.feng.ti.vaultkey.presentation.vault.SetupPinFragment
+                    || current instanceof mz.ac.ucm.feng.ti.vaultkey.presentation.vault.UnlockFragment) {
+                return;
+            }
+            if (!ServiceLocator.get().vaultRepository().isUnlocked()) {
                 showUnlock();
             }
         } catch (Exception ignored) {
@@ -103,6 +112,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void showFragment(Fragment fragment, String tag, boolean addToBackStack,
                              boolean showBottomNav, boolean secure) {
+        // Callbacks assíncronos podem chegar depois de o estado ter sido
+        // guardado; nesse caso não se navega (evita IllegalStateException).
+        if (isFinishing() || isDestroyed()
+                || getSupportFragmentManager().isStateSaved()) {
+            return;
+        }
         setSecure(secure);
         bottomNav.setVisibility(showBottomNav ? View.VISIBLE : View.GONE);
         if (addToBackStack) {
@@ -153,5 +168,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
+    }
+
+    private void applySystemBarInsets(View root) {
+        ViewCompat.setOnApplyWindowInsetsListener(root, (view, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return insets;
+        });
     }
 }

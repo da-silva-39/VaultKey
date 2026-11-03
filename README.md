@@ -23,8 +23,10 @@ sem servidores e sem nuvem.
 | Dashboard (contagens, favoritos, pesquisa, atalhos) | ✅ |
 | Credenciais: criar, ver (oculta), editar, eliminar, pesquisar, filtrar, favoritar, copiar, abrir URL | ✅ |
 | Gerador de senhas + força + cópia temporária | ✅ |
+| Saúde do cofre (pontuação, senhas fracas/repetidas/antigas) | ✅ |
 | TOTP com contagem decrescente e actualização automática | ✅ |
 | HOTP com contador persistente e avanço transaccional | ✅ |
+| Pesquisa de contas 2FA por serviço ou conta | ✅ |
 | QR Code offline (câmara + ZXing) e cadastro manual validado | ✅ |
 | Clipboard com limpeza automática configurável | ✅ |
 | Bloqueio automático / ao sair / imediato, `FLAG_SECURE` nos ecrãs sensíveis | ✅ |
@@ -52,7 +54,7 @@ sem servidores e sem nuvem.
 
 ```
 presentation/   Activities, Fragments, ViewModels, Adapters (sem SQL, sem cripto)
-domain/         modelos, contratos de repositório, casos de uso, validações (Java puro)
+domain/         modelos, contratos de repositório, casos de uso, validações, saúde do cofre (Java puro)
 data/           Room (entidades, DAOs, VaultDatabase), repositórios, mapeadores
 security/       Keystore, AES-GCM, PIN/PBKDF2, sessão, biometria, clipboard
 authenticator/  Base32, HOTP, TOTP, URI otpauth:// (Java puro, testável)
@@ -70,8 +72,8 @@ cada operação sensível (check-on-access, sem temporizadores frágeis).
 ```
 app/src/main/java/mz/ac/ucm/feng/ti/vaultkey/
 ├── VaultKeyApplication.java
-├── presentation/{splash,vault,dashboard,credentials,passwordgenerator,authenticator,settings}
-├── domain/{model,repository,usecase,validation,password}
+├── presentation/{splash,vault,dashboard,credentials,passwordgenerator,authenticator,health,settings}
+├── domain/{model,repository,usecase,validation,password,health}
 ├── data/{local/{dao,entity},repository,mapper}
 ├── security/{crypto,keystore,pin,session,biometric,clipboard}
 ├── authenticator/{base32,hotp,totp,uri}
@@ -94,17 +96,18 @@ app/src/androidTest/   # instrumentados (Room em memória)
 ## Testes
 
 ```bash
-./gradlew :app:testDebugUnitTest          # 28 testes unitários (JVM)
+./gradlew :app:testDebugUnitTest          # 33 testes unitários (JVM)
 ./gradlew :app:connectedDebugAndroidTest  # instrumentados (precisa de emulador)
 ```
 
 Cobertura unitária: Base32 (RFC 4648), HOTP (**vectores RFC 4226**),
 TOTP (**vectores RFC 6238** SHA-1/256/512), URIs `otpauth://`, PIN/PBKDF2,
 AES-GCM (round-trip, nonces únicos, detecção de adulteração, AAD errado,
-chave errada), gerador/força de senhas e validações de negócio.
-Instrumentados: CRUD Room, pesquisa, favoritos e contador HOTP transaccional.
+chave errada), gerador/força de senhas, validações de negócio e análise de
+saúde do cofre (fracas/repetidas/antigas). Instrumentados: CRUD Room, pesquisa,
+favoritos e contador HOTP transaccional.
 
-**Resultado actual: 28/28 unitários a passar; `assembleDebug` e compilação dos
+**Resultado actual: 33/33 unitários a passar; `assembleDebug` e compilação dos
 testes instrumentados com sucesso.**
 
 ## Segurança (resumo)

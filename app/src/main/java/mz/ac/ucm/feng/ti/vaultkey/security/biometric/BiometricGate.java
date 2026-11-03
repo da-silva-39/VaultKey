@@ -33,15 +33,20 @@ public final class BiometricGate {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             return false;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            BiometricManager manager = context.getSystemService(BiometricManager.class);
-            return manager != null
-                    && manager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
-                    == BiometricManager.BIOMETRIC_SUCCESS;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                BiometricManager manager = context.getSystemService(BiometricManager.class);
+                return manager != null
+                        && manager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                        == BiometricManager.BIOMETRIC_SUCCESS;
+            }
+            // API 28: sem BiometricManager.canAuthenticate; verifica hardware.
+            PackageManager pm = context.getPackageManager();
+            return pm != null && pm.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT);
+        } catch (Exception e) {
+            // Permissão/hardware indisponível: degrada para PIN.
+            return false;
         }
-        // API 28: sem BiometricManager.canAuthenticate; verifica hardware.
-        PackageManager pm = context.getPackageManager();
-        return pm != null && pm.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT);
     }
 
     public static void authenticate(FragmentActivity activity, String title, String subtitle,
@@ -66,17 +71,21 @@ public final class BiometricGate {
                         callback.onFailed(errString == null ? "" : errString.toString());
                     }
                 };
-        BiometricPrompt prompt = new BiometricPrompt.Builder(activity)
-                .setTitle(title)
-                .setSubtitle(subtitle)
-                .setNegativeButton(activity.getString(R.string.action_cancel),
-                        executor, (dialog, which) ->
-                                callback.onFailed(activity.getString(R.string.action_cancel)))
-                .build();
-        if (cryptoObject != null) {
-            prompt.authenticate(cryptoObject, cancellation, executor, authCallback);
-        } else {
-            prompt.authenticate(cancellation, executor, authCallback);
+        try {
+            BiometricPrompt prompt = new BiometricPrompt.Builder(activity)
+                    .setTitle(title)
+                    .setSubtitle(subtitle)
+                    .setNegativeButton(activity.getString(R.string.action_cancel),
+                            executor, (dialog, which) ->
+                                    callback.onFailed(activity.getString(R.string.action_cancel)))
+                    .build();
+            if (cryptoObject != null) {
+                prompt.authenticate(cryptoObject, cancellation, executor, authCallback);
+            } else {
+                prompt.authenticate(cancellation, executor, authCallback);
+            }
+        } catch (Exception e) {
+            callback.onFailed(activity.getString(R.string.unlock_biometric_failed));
         }
     }
 }

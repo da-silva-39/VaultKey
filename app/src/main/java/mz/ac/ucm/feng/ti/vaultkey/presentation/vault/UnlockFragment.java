@@ -112,6 +112,7 @@ public class UnlockFragment extends Fragment {
             boolean show = false;
             try {
                 VaultRepositoryImpl repo = ServiceLocator.get().vaultRepositoryImpl();
+                repo.reloadConfig();
                 show = repo.isBiometricEnabled()
                         && repo.hasBiometricWrap()
                         && BiometricGate.canAuthenticate(requireActivity());

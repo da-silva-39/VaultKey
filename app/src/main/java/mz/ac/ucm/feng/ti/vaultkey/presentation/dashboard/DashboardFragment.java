@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +25,8 @@ import mz.ac.ucm.feng.ti.vaultkey.presentation.credentials.CredentialFormFragmen
 import mz.ac.ucm.feng.ti.vaultkey.presentation.credentials.CredentialListFragment;
 import mz.ac.ucm.feng.ti.vaultkey.presentation.credentials.CredentialViewModel;
 import mz.ac.ucm.feng.ti.vaultkey.presentation.credentials.CredentialAdapter;
+import mz.ac.ucm.feng.ti.vaultkey.presentation.health.VaultHealthFragment;
+import mz.ac.ucm.feng.ti.vaultkey.presentation.health.VaultHealthViewModel;
 import mz.ac.ucm.feng.ti.vaultkey.presentation.passwordgenerator.PasswordGeneratorFragment;
 
 /**
@@ -33,9 +36,12 @@ import mz.ac.ucm.feng.ti.vaultkey.presentation.passwordgenerator.PasswordGenerat
 public class DashboardFragment extends Fragment {
 
     private CredentialViewModel credentialViewModel;
+    private VaultHealthViewModel healthViewModel;
     private TextView tvCredCount;
     private TextView tvAuthCount;
     private TextView tvEmpty;
+    private TextView tvHealthScore;
+    private TextView tvHealthSummary;
     private CredentialAdapter favoritesAdapter;
 
     @Nullable
@@ -49,10 +55,13 @@ public class DashboardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         credentialViewModel = new ViewModelProvider(this).get(CredentialViewModel.class);
+        healthViewModel = new ViewModelProvider(this).get(VaultHealthViewModel.class);
 
         tvCredCount = view.findViewById(R.id.tv_cred_count);
         tvAuthCount = view.findViewById(R.id.tv_auth_count);
         tvEmpty = view.findViewById(R.id.tv_empty);
+        tvHealthScore = view.findViewById(R.id.tv_health_score);
+        tvHealthSummary = view.findViewById(R.id.tv_health_summary);
         TextInputEditText etSearch = view.findViewById(R.id.et_search);
         RecyclerView rvFavorites = view.findViewById(R.id.rv_favorites);
         rvFavorites.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -83,6 +92,9 @@ public class DashboardFragment extends Fragment {
         view.findViewById(R.id.btn_new_2fa).setOnClickListener(v ->
                 activity.showFragment(new AuthenticatorFormFragment(),
                         "auth_form", true, false, true));
+        view.findViewById(R.id.card_health).setOnClickListener(v ->
+                activity.showFragment(new VaultHealthFragment(),
+                        "health", true, false, false));
 
         credentialViewModel.getCounts().observe(getViewLifecycleOwner(), counts -> {
             if (counts != null && counts.length == 2) {
@@ -94,6 +106,21 @@ public class DashboardFragment extends Fragment {
             favoritesAdapter.submit(favs);
             tvEmpty.setVisibility(favs == null || favs.isEmpty() ? View.VISIBLE : View.GONE);
         });
+        healthViewModel.getReport().observe(getViewLifecycleOwner(), report -> {
+            if (report == null) {
+                return;
+            }
+            int score = report.getScore();
+            int colorRes = score >= 80 ? R.color.vault_success
+                    : score >= 50 ? R.color.vault_warning : R.color.vault_error;
+            tvHealthScore.setText(String.valueOf(score));
+            tvHealthScore.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
+            int issues = report.getIssueCount();
+            tvHealthSummary.setText(issues == 0
+                    ? getString(R.string.health_summary_perfect)
+                    : getResources().getQuantityString(
+                            R.plurals.health_issues, issues, issues));
+        });
     }
 
     @Override
@@ -101,5 +128,6 @@ public class DashboardFragment extends Fragment {
         super.onResume();
         credentialViewModel.loadCounts();
         credentialViewModel.loadFavorites();
+        healthViewModel.load();
     }
 }

@@ -5,6 +5,8 @@
     <!-- Apenas a câmara (leitura de QR Code 2FA, pedida só quando necessária).
          Sem permissão de INTERNET: a app é totalmente offline. -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Necessária para consultar/pedir autenticação biométrica (API 28+). -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-feature
         android:name="android.hardware.camera.any"
         android:required="false" />

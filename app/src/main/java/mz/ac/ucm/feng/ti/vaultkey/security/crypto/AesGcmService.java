@@ -1,7 +1,6 @@
 package mz.ac.ucm.feng.ti.vaultkey.security.crypto;
 
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
@@ -10,7 +9,8 @@ import javax.crypto.spec.GCMParameterSpec;
 
 /**
  * Cifragem autenticada AES-GCM (256 bits, tag de 128 bits, nonce de 96 bits
- * único por operação via SecureRandom).
+ * único por operação). O nonce é gerado pelo provedor (obrigatório no Android
+ * Keystore quando a cifragem aleatória está activa) e guardado no contentor.
  *
  * <p>Formato persistido: {@code v1.<ivBase64>.<ctBase64>}. O AAD (dados
  * associados autenticados) vincula o texto cifrado ao registo/contexto;
@@ -23,24 +23,27 @@ public final class AesGcmService {
     private static final int IV_BYTES = 12;
     private static final int TAG_BITS = 128;
 
-    private final SecureRandom random = new SecureRandom();
-
     /** Cifra texto e devolve o contentor serializado. */
     public String encryptToString(SecretKey key, String plainText, byte[] aad) throws CryptoException {
         if (key == null || plainText == null) {
             throw new CryptoException("Parâmetros de cifragem inválidos.");
         }
         try {
-            byte[] iv = new byte[IV_BYTES];
-            random.nextBytes(iv);
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-            cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(TAG_BITS, iv));
+            // Sem IV explícito: o provedor (Keystore) gera um nonce aleatório.
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] iv = cipher.getIV();
+            if (iv == null || iv.length != IV_BYTES) {
+                throw new CryptoException("Nonce inválido gerado pelo provedor.");
+            }
             if (aad != null && aad.length > 0) {
                 cipher.updateAAD(aad);
             }
             byte[] ct = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
             return "v1." + Base64.getEncoder().encodeToString(iv)
                     + "." + Base64.getEncoder().encodeToString(ct);
+        } catch (CryptoException e) {
+            throw e;
         } catch (Exception e) {
             throw new CryptoException("Falha ao cifrar os dados.", e);
         }

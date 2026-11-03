@@ -17,8 +17,15 @@ import mz.ac.ucm.feng.ti.vaultkey.di.ServiceLocator;
 import mz.ac.ucm.feng.ti.vaultkey.domain.repository.VaultRepository;
 import mz.ac.ucm.feng.ti.vaultkey.presentation.MainActivity;
 
-/** Splash: decide entre configuração inicial e desbloqueio. */
+/**
+ * Splash: decide entre configuração inicial e desbloqueio. A navegação só
+ * acontece com o estado do FragmentManager válido; se a app for para segundo
+ * plano durante a verificação, tenta de novo no onResume (sem crash).
+ */
 public class SplashFragment extends Fragment {
+
+    private boolean decisionReady;
+    private boolean goSetup;
 
     @Nullable
     @Override
@@ -31,26 +38,44 @@ public class SplashFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         AppExecutors.diskIo().execute(() -> {
-            VaultRepository vault;
-            boolean initialized = false;
+            boolean initialized;
             try {
-                vault = ServiceLocator.get().vaultRepository();
+                VaultRepository vault = ServiceLocator.get().vaultRepository();
                 initialized = vault.isInitialized();
             } catch (Exception e) {
                 initialized = false;
             }
-            final boolean goSetup = !initialized;
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            final boolean setup = !initialized;
+            new Handler(Looper.getMainLooper()).post(() -> {
                 if (!isAdded()) {
                     return;
                 }
-                MainActivity activity = (MainActivity) requireActivity();
-                if (goSetup) {
-                    activity.showSetup();
-                } else {
-                    activity.showUnlock();
-                }
-            }, 600);
+                goSetup = setup;
+                decisionReady = true;
+                navigate();
+            });
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        navigate();
+    }
+
+    private void navigate() {
+        if (!decisionReady || !isAdded()) {
+            return;
+        }
+        MainActivity activity = (MainActivity) requireActivity();
+        if (activity.isFinishing() || activity.isDestroyed()
+                || activity.getSupportFragmentManager().isStateSaved()) {
+            return;
+        }
+        if (goSetup) {
+            activity.showSetup();
+        } else {
+            activity.showUnlock();
+        }
     }
 }
